@@ -1,0 +1,48 @@
+{
+  "name": "@honeide/plugins",
+  "version": "0.1.0",
+  "description": "Hone plugin host — loads and manages native plugins via Perry FFI",
+  "main": "perry/live.ts",
+  "exports": {
+    ".": "./perry/live.ts",
+    "./perry/live": "./perry/live.ts"
+  },
+  "license": "MIT",
+  "perry": {
+    "nativeLibrary": {
+      "module": "@honeide/plugins",
+      "functions": [
+        { "name": "hone_plugin_init", "params": [], "returns": "f64" },
+        { "name": "hone_plugin_load", "params": ["i64"], "returns": "f64" },
+        { "name": "hone_plugin_unload", "params": ["i64"], "returns": "f64" },
+        { "name": "hone_plugin_count", "params": [], "returns": "f64" },
+        { "name": "hone_plugin_has_hook", "params": ["i64"], "returns": "f64" },
+        { "name": "hone_plugin_hook_count", "params": [], "returns": "f64" },
+        { "name": "hone_plugin_dispatch_hook", "params": ["i64", "i64"], "returns": "f64" },
+        { "name": "hone_plugin_register_host_callback", "params": ["i64", "i64"], "returns": "f64" },
+        { "name": "hone_plugin_scan_and_load", "params": ["i64"], "returns": "f64" },
+        { "name": "hone_host_api_log", "params": ["f64", "i64"], "returns": "void" },
+        { "name": "hone_host_api_notify", "params": ["i64", "i64", "i64"], "returns": "void" },
+        { "name": "hone_host_api_command_register", "params": ["i64", "i64", "i64"], "returns": "void" },
+        { "name": "hone_host_api_command_unregister", "params": ["i64"], "returns": "void" },
+        { "name": "hone_host_api_statusbar_create", "params": ["i64", "i64", "i64", "i64", "f64", "i64"], "returns": "f64" },
+        { "name": "hone_host_api_statusbar_update", "params": ["f64", "i64", "i64"], "returns": "void" },
+        { "name": "hone_host_api_statusbar_remove", "params": ["f64"], "returns": "void" }
+      ],
+      "targets": {
+        "macos": {
+          "crate": "./",
+          "lib": "libhone_plugin_host.a"
+        },
+        "linux": {
+          "crate": "./",
+          "lib": "libhone_plugin_host.a"
+        },
+        "windows": {
+          "crate": "./",
+          "lib": "hone_plugin_host.lib"
+        }
+      }
+    }
+  }
+}

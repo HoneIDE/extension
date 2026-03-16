@@ -1,0 +1,12 @@
+{
+  "name": "monokai-classic",
+  "displayName": "Monokai Classic Theme",
+  "version": "0.1.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "A classic Monokai color theme. Tier 1 — declarative data only, no code.",
+  "entry": "",
+  "capabilities": {},
+  "hooks": [],
+  "hone": ">=0.1.0"
+}

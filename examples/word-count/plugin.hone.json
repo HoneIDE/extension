@@ -1,0 +1,20 @@
+{
+  "name": "word-count",
+  "displayName": "Word Count",
+  "version": "0.1.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Shows word count in the status bar, updates on selection change.",
+  "entry": "WordCountPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "ui.statusbar": true,
+    "ui.commandPalette": true
+  },
+  "hooks": [
+    "onDocumentOpen",
+    "onSelectionChange",
+    "onCommand:word-count.show"
+  ],
+  "hone": ">=0.1.0"
+}

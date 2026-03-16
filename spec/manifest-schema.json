@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hone Plugin Manifest",
+  "description": "Schema for plugin.hone.json — the manifest file for Hone native plugins.",
+  "type": "object",
+  "required": ["name", "displayName", "version", "author", "license", "description", "entry", "capabilities", "hooks", "hone"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Unique plugin identifier (lowercase, hyphens only)."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Human-readable plugin name."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version string."
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Plugin author name or organization."
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SPDX license identifier (e.g., MIT, Apache-2.0)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of what the plugin does."
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "description": "Repository URL."
+    },
+    "icon": {
+      "type": "string",
+      "description": "Path to icon file (relative to plugin root)."
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the exported class implementing HonePlugin."
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Declared capabilities determine which Host API functions are available.",
+      "properties": {
+        "editor.read": {
+          "type": "boolean",
+          "description": "Read buffer contents, selections, cursor."
+        },
+        "editor.write": {
+          "type": "boolean",
+          "description": "Submit edits via Changes Queue."
+        },
+        "editor.decorations": {
+          "type": "boolean",
+          "description": "Add inline decorations (underlines, highlights)."
+        },
+        "filesystem.read": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Read files matching these glob patterns (relative to workspace root)."
+        },
+        "filesystem.write": {
+          "type": "boolean",
+          "description": "Write files to the workspace."
+        },
+        "network": {
+          "type": "boolean",
+          "description": "Make HTTP requests."
+        },
+        "process.spawn": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Spawn these allowlisted binaries."
+        },
+        "terminal": {
+          "type": "boolean",
+          "description": "Access interactive terminal."
+        },
+        "ui.panel": {
+          "type": "boolean",
+          "description": "Create side panels."
+        },
+        "ui.statusbar": {
+          "type": "boolean",
+          "description": "Create status bar items."
+        },
+        "ui.gutter": {
+          "type": "boolean",
+          "description": "Add gutter icons next to line numbers."
+        },
+        "ui.commandPalette": {
+          "type": "boolean",
+          "description": "Register commands in the command palette."
+        },
+        "ui.contextMenu": {
+          "type": "boolean",
+          "description": "Add context menu items."
+        },
+        "ui.notifications": {
+          "type": "boolean",
+          "description": "Show toast notifications."
+        },
+        "ui.webview": {
+          "type": "boolean",
+          "description": "Create embedded webviews (Tier 3 only)."
+        }
+      }
+    },
+    "hooks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Event hooks this plugin subscribes to (e.g., onDocumentFormat, onDocumentSave, onCommand:my.command)."
+    },
+    "configSchema": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean"]
+          },
+          "default": {},
+          "description": { "type": "string" },
+          "enum": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "description": "User-facing configuration schema."
+    },
+    "hone": {
+      "type": "string",
+      "description": "Minimum Hone version required (semver range)."
+    },
+    "perryVersion": {
+      "type": "string",
+      "description": "Perry compiler version used to build (auto-set by build)."
+    }
+  }
+}

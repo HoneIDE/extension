@@ -1,0 +1,27 @@
+{
+  "name": "simple-linter",
+  "displayName": "Simple Linter",
+  "version": "0.1.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Runs an external linter binary and applies decorations for diagnostics.",
+  "entry": "SimpleLinterPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "editor.decorations": true,
+    "process.spawn": ["eslint"],
+    "ui.notifications": true
+  },
+  "hooks": [
+    "onDocumentSave",
+    "onDocumentOpen"
+  ],
+  "configSchema": {
+    "lintOnSave": {
+      "type": "boolean",
+      "default": true,
+      "description": "Run linter on file save"
+    }
+  },
+  "hone": ">=0.1.0"
+}

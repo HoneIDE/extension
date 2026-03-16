@@ -1,0 +1,16 @@
+{
+  "name": "@hone/marketplace",
+  "version": "0.1.0",
+  "description": "Hone Plugin Marketplace — REST API for publishing, searching, and distributing plugins",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.7.0"
+  }
+}

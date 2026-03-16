@@ -1,0 +1,17 @@
+{
+  "name": "hello-world",
+  "displayName": "Hello World",
+  "version": "0.1.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Simplest possible Hone plugin — registers a command and shows a notification.",
+  "entry": "HelloWorldPlugin",
+  "capabilities": {
+    "ui.commandPalette": true,
+    "ui.notifications": true
+  },
+  "hooks": [
+    "onCommand:hello-world.greet"
+  ],
+  "hone": ">=0.1.0"
+}

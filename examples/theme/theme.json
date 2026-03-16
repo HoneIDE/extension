@@ -1,0 +1,35 @@
+{
+  "name": "Monokai Classic",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#272822",
+    "editor.foreground": "#F8F8F2",
+    "editor.lineHighlightBackground": "#3E3D32",
+    "editor.selectionBackground": "#49483E",
+    "editorCursor.foreground": "#F8F8F0",
+    "editorWhitespace.foreground": "#3B3A32",
+    "editorLineNumber.foreground": "#90908A",
+    "editorLineNumber.activeForeground": "#C2C2BF",
+    "activityBar.background": "#272822",
+    "activityBar.foreground": "#F8F8F2",
+    "sideBar.background": "#21211D",
+    "sideBar.foreground": "#F8F8F2",
+    "statusBar.background": "#414339",
+    "statusBar.foreground": "#F8F8F2",
+    "tab.activeBackground": "#272822",
+    "tab.inactiveBackground": "#21211D",
+    "tab.activeForeground": "#F8F8F2",
+    "tab.inactiveForeground": "#90908A"
+  },
+  "tokenColors": {
+    "comment": "#75715E",
+    "string": "#E6DB74",
+    "number": "#AE81FF",
+    "keyword": "#F92672",
+    "function": "#A6E22E",
+    "type": "#66D9EF",
+    "variable": "#F8F8F2",
+    "operator": "#F92672",
+    "punctuation": "#F8F8F2"
+  }
+}

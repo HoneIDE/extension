@@ -1,0 +1,30 @@
+{
+  "name": "trailing-whitespace",
+  "displayName": "Trailing Whitespace Trimmer",
+  "version": "0.1.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Removes trailing whitespace on format.",
+  "entry": "TrailingWhitespacePlugin",
+  "capabilities": {
+    "editor.read": true,
+    "editor.write": true,
+    "ui.notifications": true
+  },
+  "hooks": [
+    "onDocumentFormat"
+  ],
+  "configSchema": {
+    "trimOnFormat": {
+      "type": "boolean",
+      "default": true,
+      "description": "Trim trailing whitespace when formatting"
+    },
+    "trimFinalNewlines": {
+      "type": "boolean",
+      "default": true,
+      "description": "Ensure file ends with a single newline"
+    }
+  },
+  "hone": ">=0.1.0"
+}
