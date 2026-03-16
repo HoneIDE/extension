@@ -1,0 +1,20 @@
+{
+  "name": "wakatime",
+  "displayName": "WakaTime",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Automatic coding time tracking. Sends heartbeats to WakaTime API.",
+  "entry": "WakaTimePlugin",
+  "capabilities": {
+    "editor.read": true,
+    "network": true,
+    "ui.statusbar": true,
+    "ui.commandPalette": true
+  },
+  "hooks": ["onDocumentOpen", "onDocumentSave"],
+  "config": {
+    "apiKey": { "type": "string", "default": "", "description": "WakaTime API key" }
+  },
+  "hone": ">=0.1.0"
+}

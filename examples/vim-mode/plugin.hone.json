@@ -1,0 +1,14 @@
+{
+  "name": "vim-mode",
+  "displayName": "Vim Keybindings",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Vim keybindings for Hone. Supports normal, insert, visual modes.",
+  "entry": "VimModePlugin",
+  "capabilities": {
+    "ui.commandPalette": true
+  },
+  "hooks": [],
+  "hone": ">=0.1.0"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "bookmarks",
+  "displayName": "Bookmarks",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Mark lines with bookmarks. Jump between them with keyboard shortcuts.",
+  "entry": "BookmarksPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "ui.commandPalette": true,
+    "ui.statusbar": true
+  },
+  "hooks": ["onCommand"],
+  "hone": ">=0.1.0"
+}

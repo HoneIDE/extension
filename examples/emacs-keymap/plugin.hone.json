@@ -1,0 +1,12 @@
+{
+  "name": "emacs-keymap",
+  "displayName": "Emacs Keybindings",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Emacs keybindings for Hone. Ctrl+A/E/K/Y, M-x, and more.",
+  "entry": "EmacsKeymapPlugin",
+  "capabilities": { "ui.commandPalette": true },
+  "hooks": [],
+  "hone": ">=0.1.0"
+}

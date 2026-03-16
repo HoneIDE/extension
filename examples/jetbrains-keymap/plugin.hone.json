@@ -1,0 +1,12 @@
+{
+  "name": "jetbrains-keymap",
+  "displayName": "JetBrains Keybindings",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "IntelliJ IDEA / WebStorm keybindings for Hone.",
+  "entry": "JetBrainsKeymapPlugin",
+  "capabilities": { "ui.commandPalette": true },
+  "hooks": [],
+  "hone": ">=0.1.0"
+}

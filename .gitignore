@@ -5,5 +5,19 @@ node_modules/
 *.a
 .DS_Store
 Cargo.lock
-examples/*/hello-world
 examples/*/node_modules/
+# Perry compiled plugin binaries (no extension)
+examples/hello-world/hello-world
+examples/word-count/word-count
+examples/todo-highlighter/todo-highlighter
+examples/color-highlight/color-highlight
+examples/bookmarks/bookmarks
+examples/rest-client/rest-client
+examples/wakatime/wakatime
+examples/vim-mode/vim-mode
+examples/emacs-keymap/emacs-keymap
+examples/jetbrains-keymap/jetbrains-keymap
+examples/sublime-keymap/sublime-keymap
+examples/formatter/formatter
+examples/linter/linter
+examples/theme/theme

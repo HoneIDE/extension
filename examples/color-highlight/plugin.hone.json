@@ -1,0 +1,15 @@
+{
+  "name": "color-highlight",
+  "displayName": "Color Highlight",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Show color swatches inline for hex (#ff0000), rgb(), and hsl() values.",
+  "entry": "ColorHighlightPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "editor.decorations": true
+  },
+  "hooks": ["onDocumentOpen", "onDocumentSave"],
+  "hone": ">=0.1.0"
+}

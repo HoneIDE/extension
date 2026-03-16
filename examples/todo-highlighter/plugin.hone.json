@@ -1,0 +1,17 @@
+{
+  "name": "todo-highlighter",
+  "displayName": "TODO Highlighter",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Highlight TODO, FIXME, HACK, NOTE annotations in code. Lists them in a panel.",
+  "entry": "TodoHighlighterPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "editor.decorations": true,
+    "ui.commandPalette": true,
+    "ui.panel": true
+  },
+  "hooks": ["onDocumentOpen", "onDocumentSave"],
+  "hone": ">=0.1.0"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "sublime-keymap",
+  "displayName": "Sublime Text Keybindings",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Sublime Text keybindings for Hone.",
+  "entry": "SublimeKeymapPlugin",
+  "capabilities": { "ui.commandPalette": true },
+  "hooks": [],
+  "hone": ">=0.1.0"
+}

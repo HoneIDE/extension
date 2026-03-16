@@ -1,0 +1,18 @@
+{
+  "name": "rest-client",
+  "displayName": "REST Client",
+  "version": "1.0.0",
+  "author": "Hone Team",
+  "license": "MIT",
+  "description": "Send HTTP requests from .http files. View responses in a panel.",
+  "entry": "RestClientPlugin",
+  "capabilities": {
+    "editor.read": true,
+    "network": true,
+    "ui.commandPalette": true,
+    "ui.panel": true,
+    "ui.notifications": true
+  },
+  "hooks": ["onCommand"],
+  "hone": ">=0.1.0"
+}
