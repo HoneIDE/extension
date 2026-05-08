@@ -169,38 +169,14 @@ pub fn snapshot_callbacks() -> HostCallbacks {
 }
 
 // ---------------------------------------------------------------------------
-// Perry StringHeader helpers — build strings that Perry can read
+// Perry-ffi string helpers. Allocations live in Perry's GC arena, so we no
+// longer need a paired free — the runtime reclaims once the JS side drops
+// the reference. Earlier hand-rolled `[len:u32][cap:u32][data...]` headers
+// silently broke when Perry's `StringHeader` grew to 5 fields in v0.5.213.
 // ---------------------------------------------------------------------------
 
-/// Build a Perry StringHeader on the heap: [len:u32][cap:u32][data...].
-/// Returns a raw pointer as i64 (NaN-boxed pointer Perry expects).
-///
-/// The caller is responsible for keeping the allocation alive for the
-/// duration of the callback. We use Box::leak intentionally — these are
-/// short-lived strings that Perry reads synchronously.
 fn make_perry_string(s: &str) -> i64 {
-    let bytes = s.as_bytes();
-    let len = bytes.len() as u32;
-    let total = 8 + bytes.len();
-    let mut buf = Vec::with_capacity(total);
-    buf.extend_from_slice(&len.to_ne_bytes()); // length
-    buf.extend_from_slice(&len.to_ne_bytes()); // capacity = length
-    buf.extend_from_slice(bytes);
-    let leaked = Box::leak(buf.into_boxed_slice());
-    leaked.as_ptr() as i64
-}
-
-/// Free a Perry string previously created with make_perry_string.
-///
-/// # Safety
-/// Must only be called with pointers returned by make_perry_string.
-unsafe fn free_perry_string(ptr: i64) {
-    if ptr == 0 { return; }
-    let p = ptr as *mut u8;
-    // Read back the length to reconstruct the slice
-    let len = *(p as *const u32) as usize;
-    let total = 8 + len;
-    let _ = Box::from_raw(std::slice::from_raw_parts_mut(p, total));
+    perry_ffi::alloc_string(s).as_raw() as i64
 }
 
 // ---------------------------------------------------------------------------
@@ -246,9 +222,6 @@ unsafe extern "C" fn bridge_notify(opts_ptr: i64) {
             let msg = make_perry_string(&json_str);
             let sev = make_perry_string("info");
             cb(pn, msg, sev);
-            free_perry_string(pn);
-            free_perry_string(msg);
-            free_perry_string(sev);
             return;
         }
     };
@@ -261,9 +234,6 @@ unsafe extern "C" fn bridge_notify(opts_ptr: i64) {
     let msg = make_perry_string(message);
     let sev = make_perry_string(severity);
     cb(pn, msg, sev);
-    free_perry_string(pn);
-    free_perry_string(msg);
-    free_perry_string(sev);
 }
 
 /// Bridge: plugin calls host.statusBar.createItem(opts_ptr).
@@ -289,15 +259,7 @@ unsafe extern "C" fn bridge_statusbar_create(opts_ptr: i64) -> i32 {
     let priority = parsed.get("priority").and_then(|v| v.as_f64()).unwrap_or(0.0);
     let command_id = make_perry_string(parsed.get("commandId").and_then(|v| v.as_str()).unwrap_or(""));
 
-    let result = cb(plugin_name, text, tooltip, alignment, priority, command_id) as i32;
-
-    free_perry_string(plugin_name);
-    free_perry_string(text);
-    free_perry_string(tooltip);
-    free_perry_string(alignment);
-    free_perry_string(command_id);
-
-    result
+    cb(plugin_name, text, tooltip, alignment, priority, command_id) as i32
 }
 
 /// Bridge: plugin calls host.statusBar.updateItem(id, opts_ptr).
@@ -318,9 +280,6 @@ unsafe extern "C" fn bridge_statusbar_update(id: i32, opts_ptr: i64) {
     let tooltip = make_perry_string(parsed.get("tooltip").and_then(|v| v.as_str()).unwrap_or(""));
 
     cb(id as f64, text, tooltip);
-
-    free_perry_string(text);
-    free_perry_string(tooltip);
 }
 
 /// Bridge: plugin calls host.statusBar.removeItem(id).
@@ -356,10 +315,6 @@ unsafe extern "C" fn bridge_command_register(
     let title = make_perry_string(&title_str);
 
     cb(pn, id, title);
-
-    free_perry_string(pn);
-    free_perry_string(id);
-    free_perry_string(title);
 }
 
 /// Bridge: plugin calls host.command.unregister(id).
@@ -369,33 +324,25 @@ unsafe extern "C" fn bridge_command_unregister(id_ptr: *const u8, _id_len: u32) 
         let id_str = str_from_raw_perry(id_ptr);
         let id = make_perry_string(&id_str);
         cb(id);
-        free_perry_string(id);
     }
 }
 
 // ---------------------------------------------------------------------------
-// String extraction helpers
+// String extraction helpers — both forms (i64 NaN-box and raw *const u8)
+// fan in to perry-ffi, which understands the current `StringHeader` layout.
 // ---------------------------------------------------------------------------
 
-/// Extract a Rust string from a NaN-boxed pointer (i64).
-/// Used for JSON strings passed from plugin code.
-unsafe fn str_from_nanbox(ptr: i64) -> String {
+fn str_from_nanbox(ptr: i64) -> String {
     if ptr == 0 { return String::new(); }
-    let p = ptr as *const u8;
-    let len = *(p as *const u32) as usize;
-    let data = p.add(8);
-    let slice = std::slice::from_raw_parts(data, len);
-    String::from_utf8_lossy(slice).to_string()
+    str_from_raw_perry(ptr as *const u8)
 }
 
-/// Extract a Rust string from a raw Perry StringHeader pointer.
-/// Used for raw *const u8 pointers in the C ABI functions.
-unsafe fn str_from_raw_perry(ptr: *const u8) -> String {
-    if ptr.is_null() { return String::new(); }
-    let len = *(ptr as *const u32) as usize;
-    let data = ptr.add(8);
-    let slice = std::slice::from_raw_parts(data, len);
-    String::from_utf8_lossy(slice).to_string()
+fn str_from_raw_perry(ptr: *const u8) -> String {
+    if ptr.is_null() || (ptr as usize) < 0x1000 {
+        return String::new();
+    }
+    let handle = unsafe { perry_ffi::JsString::from_raw(ptr as *mut perry_ffi::StringHeader) };
+    perry_ffi::read_string(handle).unwrap_or("").to_string()
 }
 
 // ---------------------------------------------------------------------------
@@ -509,25 +456,19 @@ mod tests {
     }
 
     #[test]
-    fn make_and_free_perry_string() {
+    fn make_perry_string_round_trips() {
         let ptr = make_perry_string("hello world");
         assert_ne!(ptr, 0);
-        unsafe {
-            let readback = str_from_nanbox(ptr);
-            assert_eq!(readback, "hello world");
-            free_perry_string(ptr);
-        }
+        let readback = str_from_nanbox(ptr);
+        assert_eq!(readback, "hello world");
     }
 
     #[test]
     fn perry_string_empty() {
         let ptr = make_perry_string("");
         assert_ne!(ptr, 0);
-        unsafe {
-            let readback = str_from_nanbox(ptr);
-            assert_eq!(readback, "");
-            free_perry_string(ptr);
-        }
+        let readback = str_from_nanbox(ptr);
+        assert_eq!(readback, "");
     }
 
     #[test]

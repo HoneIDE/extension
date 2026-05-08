@@ -10,6 +10,7 @@
   "license": "MIT",
   "perry": {
     "nativeLibrary": {
+      "abiVersion": "0.5",
       "module": "@honeide/plugins",
       "functions": [
         { "name": "hone_plugin_init", "params": [], "returns": "f64" },

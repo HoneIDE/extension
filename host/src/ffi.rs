@@ -55,22 +55,19 @@ fn get_plugins_dir() -> PathBuf {
 }
 
 // ---------------------------------------------------------------------------
-// String helpers for Perry FFI (NaN-boxed string pointers)
+// String helpers for Perry FFI — go through `perry-ffi` so we stay on the
+// stable wrapper surface. The hand-rolled 8-byte header in earlier versions
+// of this crate silently broke when Perry v0.5.213 expanded `StringHeader`
+// to 5 fields (20 bytes); the perry-ffi shim hides the layout entirely.
 // ---------------------------------------------------------------------------
 
-/// Extract a Rust string from a Perry NaN-boxed string pointer.
-///
-/// # Safety
-/// The pointer must be a valid Perry StringHeader.
-unsafe fn str_from_ptr(ptr: *const u8) -> String {
-    if ptr.is_null() {
+/// Extract a Rust string from a Perry `StringHeader` pointer.
+fn str_from_ptr(ptr: *const u8) -> String {
+    if ptr.is_null() || (ptr as usize) < 0x1000 {
         return String::new();
     }
-    // Perry StringHeader layout: [length: u32][capacity: u32][data...]
-    let len = *(ptr as *const u32) as usize;
-    let data_ptr = ptr.add(8); // Skip 8 bytes (length + capacity)
-    let slice = std::slice::from_raw_parts(data_ptr, len);
-    String::from_utf8_lossy(slice).to_string()
+    let handle = unsafe { perry_ffi::JsString::from_raw(ptr as *mut perry_ffi::StringHeader) };
+    perry_ffi::read_string(handle).unwrap_or("").to_string()
 }
 
 // ---------------------------------------------------------------------------
@@ -322,19 +319,12 @@ pub unsafe extern "C" fn hone_plugin_scan_and_load(dir_ptr: *const u8) -> f64 {
             if !manifest_path.exists() {
                 continue;
             }
-            // Try to load the plugin
-            // Create a Perry-style string header for the path
-            let path_str = path.to_string_lossy().to_string();
-            let path_bytes = path_str.as_bytes();
-            let len = path_bytes.len() as u32;
-            let cap = len;
-            // Build a temporary StringHeader: [len:u32][cap:u32][data...]
-            let mut header = Vec::with_capacity(8 + path_bytes.len());
-            header.extend_from_slice(&len.to_ne_bytes());
-            header.extend_from_slice(&cap.to_ne_bytes());
-            header.extend_from_slice(path_bytes);
-
-            let result = hone_plugin_load(header.as_ptr());
+            // Try to load the plugin via the same FFI path the JS side uses.
+            // Allocate a Perry-arena string for the path and pass its header
+            // pointer through; the runtime's GC reclaims the allocation.
+            let path_str = path.to_string_lossy();
+            let header = perry_ffi::alloc_string(path_str.as_ref());
+            let result = hone_plugin_load(header.as_raw() as *const u8);
             if result > 0.0 {
                 loaded += 1.0;
             }
