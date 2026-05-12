@@ -13,10 +13,10 @@
  *   {"name": "Alice"}
  */
 
-import { HonePlugin } from '@hone/sdk';
-import { HoneHostImpl } from '@hone/sdk';
-import type { HoneHost } from '@hone/sdk';
-import type { CommandEvent } from '@hone/sdk';
+import { HonePlugin } from '@honeide/sdk';
+import { HoneHostImpl } from '@honeide/sdk';
+import type { HoneHost } from '@honeide/sdk';
+import type { CommandEvent } from '@honeide/sdk';
 
 export class RestClientPlugin extends HonePlugin {
   responsePanelId: number = 0;

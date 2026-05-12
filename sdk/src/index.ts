@@ -1,5 +1,5 @@
 /**
- * @hone/sdk — Hone Plugin SDK
+ * @honeide/sdk — Hone Plugin SDK
  *
  * Types, base classes, and testing utilities for building native Hone plugins.
  * All code is Perry-compilable from day 1.

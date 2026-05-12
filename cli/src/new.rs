@@ -93,9 +93,9 @@ pub fn run(name: &str, author: &str) -> Result<(), String> {
  * Perry-safe: no closures on `this`, no .map(), no string `+`.
  */
 
-import {{ HonePlugin }} from '@hone/sdk';
-import type {{ HoneHost }} from '@hone/sdk';
-import type {{ CommandEvent }} from '@hone/sdk';
+import {{ HonePlugin }} from '@honeide/sdk';
+import type {{ HoneHost }} from '@honeide/sdk';
+import type {{ CommandEvent }} from '@honeide/sdk';
 
 export class {} extends HonePlugin {{
   constructor(host: HoneHost) {{
@@ -136,8 +136,8 @@ export class {} extends HonePlugin {{
     let test_ts = format!(
         r#"import {{ describe, test, expect, beforeEach }} from 'bun:test';
 import {{ {} }} from '../src/index';
-import {{ MockHost }} from '@hone/sdk';
-import type {{ PluginCapabilities }} from '@hone/sdk';
+import {{ MockHost }} from '@honeide/sdk';
+import type {{ PluginCapabilities }} from '@honeide/sdk';
 
 const caps: PluginCapabilities = {{
   'ui.commandPalette': true,

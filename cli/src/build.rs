@@ -36,12 +36,12 @@ fn find_perry(perry_override: Option<&str>) -> Result<String, String> {
     Err("Perry compiler not found. Install Perry or use --perry <path>".to_string())
 }
 
-/// Find the @hone/sdk package for resolution.
+/// Find the @honeide/sdk package for resolution.
 /// Searches common locations relative to the plugin dir and the hone-extension dir.
 fn find_sdk_path() -> Option<String> {
     let candidates = [
         // Relative to plugin directory (symlinked or installed)
-        "node_modules/@hone/sdk",
+        "node_modules/@honeide/sdk",
         // Relative to hone-extension workspace
         "../sdk",
         "../../hone-extension/sdk",
@@ -55,7 +55,7 @@ fn find_sdk_path() -> Option<String> {
         }
     }
 
-    // Also check if @hone/sdk is in node_modules (npm/bun install)
+    // Also check if @honeide/sdk is in node_modules (npm/bun install)
     if let Ok(home) = std::env::var("HOME") {
         let global_path = Path::new(&home).join(".hone").join("sdk");
         if global_path.is_dir() && global_path.join("src").join("index.ts").exists() {
@@ -66,7 +66,7 @@ fn find_sdk_path() -> Option<String> {
     None
 }
 
-/// Ensure @hone/sdk is resolvable by symlinking into node_modules if needed.
+/// Ensure @honeide/sdk is resolvable by symlinking into node_modules if needed.
 fn ensure_sdk_resolution() -> Result<(), String> {
     let node_modules_sdk = Path::new("node_modules").join("@hone").join("sdk");
 
@@ -80,7 +80,7 @@ fn ensure_sdk_resolution() -> Result<(), String> {
         Some(p) => p,
         None => {
             return Err(
-                "@hone/sdk not found. Ensure it is installed or symlinked in node_modules.".to_string()
+                "@honeide/sdk not found. Ensure it is installed or symlinked in node_modules.".to_string()
             );
         }
     };
@@ -94,16 +94,16 @@ fn ensure_sdk_resolution() -> Result<(), String> {
     #[cfg(unix)]
     {
         std::os::unix::fs::symlink(&sdk_path, &node_modules_sdk)
-            .map_err(|e| format!("Failed to symlink @hone/sdk: {}", e))?;
+            .map_err(|e| format!("Failed to symlink @honeide/sdk: {}", e))?;
     }
 
     #[cfg(windows)]
     {
         std::os::windows::fs::symlink_dir(&sdk_path, &node_modules_sdk)
-            .map_err(|e| format!("Failed to symlink @hone/sdk: {}", e))?;
+            .map_err(|e| format!("Failed to symlink @honeide/sdk: {}", e))?;
     }
 
-    println!("Linked @hone/sdk -> {}", sdk_path);
+    println!("Linked @honeide/sdk -> {}", sdk_path);
     Ok(())
 }
 
@@ -179,7 +179,7 @@ pub fn run(perry_override: Option<&str>) -> Result<(), String> {
 
     println!("Building plugin '{}'...", manifest.name);
 
-    // Ensure @hone/sdk and @honeide/plugins are resolvable for import
+    // Ensure @honeide/sdk and @honeide/plugins are resolvable for import
     ensure_sdk_resolution()?;
     ensure_host_resolution()?;
 

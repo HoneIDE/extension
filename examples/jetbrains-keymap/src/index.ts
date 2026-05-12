@@ -1,9 +1,9 @@
 /**
  * JetBrains Keymap — IntelliJ/WebStorm keybindings for Hone.
  */
-import { HonePlugin } from '@hone/sdk';
-import { HoneHostImpl } from '@hone/sdk';
-import type { HoneHost } from '@hone/sdk';
+import { HonePlugin } from '@honeide/sdk';
+import { HoneHostImpl } from '@honeide/sdk';
+import type { HoneHost } from '@honeide/sdk';
 
 export class JetBrainsKeymapPlugin extends HonePlugin {
   constructor(host: HoneHost) { super(host); }

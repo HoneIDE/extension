@@ -1,12 +1,15 @@
 {
-  "name": "@hone/sdk",
-  "version": "0.1.0",
+  "name": "@honeide/sdk",
+  "version": "0.1.1",
   "description": "Hone Plugin SDK — types, base classes, and testing utilities for native plugins",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
+  "files": [
+    "src/"
+  ],
   "scripts": {
     "test": "bun test",
     "test:watch": "bun test --watch",
@@ -14,6 +17,18 @@
   },
   "keywords": ["hone", "plugin", "sdk", "perry"],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HoneIDE/extension.git",
+    "directory": "sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/HoneIDE/extension/issues"
+  },
+  "homepage": "https://hone.codes",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/bun": "latest",

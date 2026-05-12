@@ -1,5 +1,5 @@
 /**
- * @hone/marketplace — Hone Plugin Marketplace
+ * @honeide/marketplace — Hone Plugin Marketplace
  *
  * REST API, client, and publisher tooling for the plugin ecosystem.
  */
