@@ -28,13 +28,13 @@ pub unsafe extern "C" fn hone_host_api_log(level: f64, msg_ptr: i64) {
         3 => "[plugin:ERROR]",
         _ => "[plugin]",
     };
-    // Read the string for stderr output
+    // Read the string for stderr output. Use perry-ffi so the current
+    // StringHeader layout is honored — the old hand-rolled 8-byte reader here
+    // (byte_len@0, data@8) silently broke when Perry v0.5.213 grew StringHeader
+    // to 5 fields (20 bytes, byte_len@4, data@20), corrupting every plugin log.
     if msg_ptr != 0 {
-        let p = msg_ptr as *const u8;
-        let len = *(p as *const u32) as usize;
-        let data = p.add(8);
-        let slice = std::slice::from_raw_parts(data, len);
-        let msg = std::str::from_utf8(slice).unwrap_or("<invalid utf8>");
+        let handle = perry_ffi::JsString::from_raw(msg_ptr as *mut perry_ffi::StringHeader);
+        let msg = perry_ffi::read_string(handle).unwrap_or("<invalid utf8>");
         eprintln!("{} {}", prefix, msg);
     }
 }

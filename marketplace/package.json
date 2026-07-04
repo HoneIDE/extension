@@ -1,5 +1,5 @@
 {
-  "name": "@honeide/marketplace",
+  "name": "@honeide/marketplace-client",
   "version": "0.1.0",
   "description": "Hone Plugin Marketplace — REST API for publishing, searching, and distributing plugins",
   "main": "src/index.ts",
